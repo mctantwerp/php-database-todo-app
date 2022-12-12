@@ -3,8 +3,8 @@
 --
 -- https://tableplus.com/
 --
--- Database: todo_v1
--- Generation Time: 2022-12-12 21:58:26.0670
+-- Database: todo_v2
+-- Generation Time: 2022-12-12 23:16:22.1550
 -- -------------------------------------------------------------
 
 
@@ -21,10 +21,24 @@
 DROP TABLE IF EXISTS `todos`;
 CREATE TABLE `todos` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
+  `text` varchar(255) DEFAULT NULL,
+  `done` tinyint DEFAULT '0',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `todos` (`id`, `text`, `done`, `created_at`, `deleted_at`, `updated_at`) VALUES
+(2, 'test', 0, '2022-12-12 22:42:00', '2022-12-12 22:13:28', '2022-12-12 22:13:26'),
+(3, 'test2', 0, '2022-12-12 22:42:02', '2022-12-12 22:13:27', '2022-12-12 22:13:25'),
+(4, 'sfsdf', 0, '2022-12-12 22:44:16', '2022-12-12 22:01:50', NULL),
+(5, '', 0, '2022-12-12 23:13:31', '2022-12-12 22:14:11', NULL),
+(6, '', 0, '2022-12-12 23:13:32', '2022-12-12 22:13:36', NULL),
+(7, '', 0, '2022-12-12 23:13:33', '2022-12-12 22:13:35', NULL),
+(8, '<strong>test</strong>', 0, '2022-12-12 23:14:19', '2022-12-12 22:14:20', NULL),
+(9, '&lt;strong&gt;test&lt;/strong&gt;', 0, '2022-12-12 23:15:43', '2022-12-12 22:15:47', '2022-12-12 22:15:46'),
+(10, 'Les geven 🤔', 0, '2022-12-12 23:15:59', '2022-12-12 22:16:04', '2022-12-12 22:16:03');
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
