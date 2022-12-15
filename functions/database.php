@@ -19,76 +19,69 @@ function getTodos(PDO $db, bool $withTrashed = false): array
 {
     if($withTrashed === true)
     {
-        $selectStatement = $db->prepare('SELECT * FROM todos');
+        $res = $db->query('SELECT * FROM todos');
     }
     else
     {
-        $selectStatement = $db->prepare('SELECT * FROM todos WHERE deleted_at IS NULL');
+        $res = $db->query('SELECT * FROM todos WHERE deleted_at IS NULL');
     }
 
-    $selectStatement->setFetchMode(PDO::FETCH_ASSOC);
-    $selectStatement->execute();
-
-    return $selectStatement->fetchAll();
+    return $res->fetchAll();
 }
 
 function addTodo(PDO $db, string $text): void
 {
     $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 
-    $insertStatement = $db->prepare('INSERT INTO todos (text) VALUES (:text)');
-    $insertStatement->bindParam('text', $text);
-    $insertStatement->execute();
+    $res = $db->prepare('INSERT INTO todos (text) VALUES (:text)');
+    $res->bindParam('text', $text);
+    $res->execute();
 }
 
 function getPendingCount(PDO $db): int
 {
-    $selectStatement = $db->prepare('SELECT COUNT(*) FROM todos WHERE done = 0 and deleted_at IS NULL');
-    $selectStatement->setFetchMode(PDO::FETCH_ASSOC);
-    $selectStatement->execute();
+    $res = $db->query('SELECT COUNT(*) FROM todos WHERE done = 0 and deleted_at IS NULL');
 
-    return $selectStatement->fetchColumn();
+    return $res->fetchColumn();
 }
 
 function getCompletedCount(PDO $db): int
 {
-    $selectStatement = $db->prepare('SELECT COUNT(*) FROM todos WHERE done = 1');
-    $selectStatement->setFetchMode(PDO::FETCH_ASSOC);
-    $selectStatement->execute();
+    $res = $db->query('SELECT COUNT(*) FROM todos WHERE done = 1 and deleted_at IS NULL');
 
-    return $selectStatement->fetchColumn();
+    return $res->fetchColumn();
 }
 
 function checkTodo(PDO $db, int $id): void
 {
     $now = date('Y-m-d H:i:s');
 
-    $updateStatement = $db->prepare('UPDATE todos SET done = 1, updated_at = :updated_at WHERE id = :id');
-    $updateStatement->bindParam('id', $id);
-    $updateStatement->bindParam('updated_at', $now);
-    $updateStatement->execute();
+    $res = $db->prepare('UPDATE todos SET done = 1, updated_at = :updated_at WHERE id = :id');
+    $res->bindParam('id', $id);
+    $res->bindParam('updated_at', $now);
+    $res->execute();
 }
 
 function uncheckTodo(PDO $db, int $id): void
 {
     $now = date('Y-m-d H:i:s');
 
-    $updateStatement = $db->prepare('UPDATE todos SET done = 0, updated_at = :updated_at WHERE id = :id');
-    $updateStatement->bindParam('id', $id);
-    $updateStatement->bindParam('updated_at', $now);
-    $updateStatement->execute();
+    $res = $db->prepare('UPDATE todos SET done = 0, updated_at = :updated_at WHERE id = :id');
+    $res->bindParam('id', $id);
+    $res->bindParam('updated_at', $now);
+    $res->execute();
 }
 
 function deleteTodo(PDO $db, int $id): void
 {
-    // $deleteStatement = $db->prepare('DELETE FROM todos WHERE id = :id');
-    // $deleteStatement->bindParam('id', $id);
-    // $deleteStatement->execute();
+    // $res = $db->prepare('DELETE FROM todos WHERE id = :id');
+    // $res->bindParam('id', $id);
+    // $res->execute();
 
     $now = date('Y-m-d H:i:s');
 
-    $updateStatement = $db->prepare('UPDATE todos SET deleted_at = :deleted_at WHERE id = :id');
-    $updateStatement->bindParam('id', $id);
-    $updateStatement->bindParam('deleted_at', $now);
-    $updateStatement->execute();
+    $res = $db->prepare('UPDATE todos SET deleted_at = :deleted_at WHERE id = :id');
+    $res->bindParam('id', $id);
+    $res->bindParam('deleted_at', $now);
+    $res->execute();
 }
