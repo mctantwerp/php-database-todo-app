@@ -1,23 +1,22 @@
 <?php
+    include('./vendor/autoload.php');
 
-    include './vendor/autoload.php';
-    include './functions/helpers.php';
-    include './functions/database.php';
+    use App\Lib\T;
 
-    registerExceptionHandler();
+    use App\Models\Todo;
 
-    $db = dbConnect(
-        user: 'root',
-        pass: '',
-        db: 'todo_v2',
-    );
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
 
-    //php check if submit
+    T::registerExceptionHandler();
+
     if($_SERVER['REQUEST_METHOD'] === 'POST')
     {
         if(isset($_POST['todo']) && !empty($_POST['todo']))
         {
-            addTodo($db, $_POST['todo']);
+            $todo = new Todo();
+            $todo->setText($_POST['todo']);
+            $todo->save();
         }
 
         if(isset($_POST['check']))
@@ -36,7 +35,7 @@
         }
     }
 
-    $todos = getTodos($db);
+    $todos = Todo::get();
 
     include './snippets/header.php';
 ?>
@@ -52,7 +51,7 @@
     </div>
     <div class="bg-gray-100 mt-5 p-5 rounded-xl shadow-lg text-gray-700">
         <h1 class="font-bold text-xl italic block mb-0 leading-none">Todo's</h1>
-        <small class="block mb-5 mt-0 text-xs text-gray-500"><?= getPendingCount($db); ?> Todos pending, <?= getCompletedCount($db); ?> Completed.</small>
+        <small class="block mb-5 mt-0 text-xs text-gray-500"><?= Todo::pending(); ?> Todos pending, <?= Todo::completed(); ?> Completed.</small>
         <div class="max-h-80 overflow-y-auto">
             <table class="table-fixed w-full">
                 <thead>
@@ -69,18 +68,18 @@
                     </tr>
                     <?php else: ?>
                         <?php foreach($todos as $nr => $todo): ?>
-                        <tr class="<?= $todo['done'] == 1 ? 'bg-green-100' : 'odd:bg-orange-100 even:bg-orange-50'; ?>">
+                        <tr class="<?= $todo->isDone() ? 'bg-green-100' : 'odd:bg-orange-100 even:bg-orange-50'; ?>">
                             <td class="text-center px-1 py-2 text-orange-800<?= getLine($todo); ?>"><?= $nr+1; ?></td>
-                            <td class="px-1 py-2 text-orange-800<?= getLine($todo); ?>"><?= $todo['text']; ?></td>
+                            <td class="px-1 py-2 text-orange-800<?= getLine($todo); ?>"><?= $todo->getText(); ?></td>
                             <td class="text-center  px-1 py-2 text-orange-800 flex gap-3 justify-start no-underline">
                                 <form method="POST">
-                                    <input type="hidden" name="id" value="<?= $todo['id']; ?>">
-                                    <?php if($todo['done'] == 0): ?>
+                                    <input type="hidden" name="id" value="<?= $todo->getId(); ?>">
+                                    <?php if($todo->isNotDone()): ?>
                                     <button type="submit" name="check" class="text-orange-600">
                                         <?= svg('check'); ?>
                                     </button>
                                     <?php endif; ?>
-                                    <?php if($todo['done'] == 1): ?>
+                                    <?php if($todo->isDone()): ?>
                                     <button type="submit" name="uncheck" class="text-orange-600">
                                         <?= svg('cross'); ?>
                                     </button>
