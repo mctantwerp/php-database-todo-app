@@ -10,4 +10,9 @@ class T
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
         $whoops->register();
     }
+
+    public static function load(string $controller, $args = [])
+	{
+		return call_user_func(new $controller(), $args);
+	}
 }
