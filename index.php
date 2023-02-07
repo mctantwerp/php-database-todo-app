@@ -21,17 +21,23 @@
 
         if(isset($_POST['check']))
         {
-            checkTodo($db, $_POST['id']);
+            $todo = new Todo($_POST['id']);
+            $todo->setDone();
+            $todo->save();
         }
 
         if(isset($_POST['uncheck']))
         {
-            uncheckTodo($db, $_POST['id']);
+            $todo = new Todo($_POST['id']);
+            $todo->setUndone();
+            $todo->save();
         }
 
         if(isset($_POST['delete']))
         {
-            deleteTodo($db, $_POST['id']);
+            $todo = new Todo();
+            $todo->find($_POST['id']);
+            $todo->delete();
         }
     }
 

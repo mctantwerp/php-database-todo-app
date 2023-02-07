@@ -19,6 +19,19 @@ Class Todo
         }
     }
 
+    public function find(int $id): void
+    {
+        $stmt = DB::getInstance()->prepare("SELECT * FROM todos WHERE id = :id");
+        $stmt->bindParam('id', $id);
+        $stmt->execute();
+
+        $todo = $stmt->fetchObject("App\Models\Todo");
+
+        $this->id = $todo->id;
+        $this->text = $todo->text;
+        $this->done = $todo->done;
+    }
+
     public static function get(bool $withTrashed = false): array
     {
         if($withTrashed === true)
@@ -35,22 +48,38 @@ Class Todo
         return $stmt->fetchAll(PDO::FETCH_CLASS, "App\Models\Todo");
     }
 
-    public function save(): void
+    public function save(): int
     {
+        if(!empty($this->id))
+        {
+            $now = date('Y-m-d H:i:s');
+
+            $res = DB::getInstance()->prepare('UPDATE todos SET text = :text, done = :done, updated_at = :updated_at WHERE id = :id');
+            $res->bindParam('id', $this->id);
+            $res->bindParam('text', $this->text);
+            $res->bindParam('done', $this->done, PDO::PARAM_INT);
+            $res->bindParam('updated_at', $now);
+            $res->execute();
+
+            return $this->id;
+        }
+
         $res = DB::getInstance()->prepare('INSERT INTO todos (text, done) VALUES (:text, :done)');
         $res->bindParam('text', $this->text);
         $res->bindParam('done', $this->done, PDO::PARAM_INT);
         $res->execute();
+
+        return DB::getInstance()->lastInsertId();
     }
 
     public function isDone(): bool
     {
-        return $this->done === 1 ? true : false;
+        return $this->done;
     }
 
     public function isNotDone(): bool
     {
-        return $this->done === 0 ? true : false;
+        return !$this->done;
     }
 
     public static function pending(): int
@@ -67,36 +96,22 @@ Class Todo
         return $res->fetchColumn();
     }
 
-    function checkTodo(PDO $db, int $id): void
+    function setDone(): void
     {
-        $now = date('Y-m-d H:i:s');
-
-        $res = $db->prepare('UPDATE todos SET done = 1, updated_at = :updated_at WHERE id = :id');
-        $res->bindParam('id', $id);
-        $res->bindParam('updated_at', $now);
-        $res->execute();
+        $this->done = true;
     }
 
-    function uncheckTodo(PDO $db, int $id): void
+    function setUnDone(): void
     {
-        $now = date('Y-m-d H:i:s');
-
-        $res = $db->prepare('UPDATE todos SET done = 0, updated_at = :updated_at WHERE id = :id');
-        $res->bindParam('id', $id);
-        $res->bindParam('updated_at', $now);
-        $res->execute();
+        $this->done = false;
     }
 
-    function deleteTodo(PDO $db, int $id): void
+    function delete(): void
     {
-        // $res = $db->prepare('DELETE FROM todos WHERE id = :id');
-        // $res->bindParam('id', $id);
-        // $res->execute();
-
         $now = date('Y-m-d H:i:s');
 
-        $res = $db->prepare('UPDATE todos SET deleted_at = :deleted_at WHERE id = :id');
-        $res->bindParam('id', $id);
+        $res = DB::getInstance()->prepare('UPDATE todos SET deleted_at = :deleted_at WHERE id = :id');
+        $res->bindParam('id', $this->id);
         $res->bindParam('deleted_at', $now);
         $res->execute();
     }
