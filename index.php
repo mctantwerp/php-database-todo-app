@@ -1,17 +1,35 @@
 <?php
+    /**
+     * Autoload all vendor packages
+     */
     include('./vendor/autoload.php');
 
+    /**
+     * Define which namespaces to use
+     */
     use App\Lib\T;
-
     use App\Models\Todo;
 
+    /**
+     * Load environment variables (env package)
+     * Will load everything from .env to $_ENV
+     */
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 
+    /**
+     * Register the exception handler
+     */
     T::registerExceptionHandler();
 
+    /**
+     * Was there a POST request?
+     */
     if($_SERVER['REQUEST_METHOD'] === 'POST')
     {
+        /**
+         * Todo field was filled in, create a new todo
+         */
         if(isset($_POST['todo']) && !empty($_POST['todo']))
         {
             $todo = new Todo();
@@ -19,6 +37,9 @@
             $todo->save();
         }
 
+        /**
+         * Check was posted, so set the todo as done
+         */
         if(isset($_POST['check']))
         {
             $todo = new Todo($_POST['id']);
@@ -26,6 +47,9 @@
             $todo->save();
         }
 
+        /**
+         * Uncheck was posted, so set the todo as undone
+         */
         if(isset($_POST['uncheck']))
         {
             $todo = new Todo($_POST['id']);
@@ -33,16 +57,30 @@
             $todo->save();
         }
 
+        /**
+         * Delete was posted, so delete the todo
+         */
         if(isset($_POST['delete']))
         {
             $todo = new Todo();
-            $todo->find($_POST['id']);
-            $todo->delete();
+
+            /**
+             * Find the todo by id and delete it
+             * Objects can be chained, so you can call methods on the object
+             * if the object is returned by the method
+             */
+            $todo->find($_POST['id'])->delete();
         }
     }
 
+    /**
+     * Get all todos
+     */
     $todos = Todo::get();
 
+    /**
+     * Include the header snippet
+     */
     include './snippets/header.php';
 ?>
 
@@ -105,5 +143,8 @@
 </div>
 
 <?php
+    /**
+     * Include the footer snippet
+     */
     include './snippets/footer.php';
 ?>
