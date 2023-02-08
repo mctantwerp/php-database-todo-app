@@ -6,9 +6,12 @@ use PDO;
 
 class DB
 {
-
     private static $objInstance;
 
+    /**
+     * Example usage:
+     * $stmt = DB::getInstance()->prepare("SELECT * FROM todos");
+     */
     public static function getInstance(): object
     {
 
