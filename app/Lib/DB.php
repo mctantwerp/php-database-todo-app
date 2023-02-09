@@ -11,8 +11,9 @@ class DB
     /**
      * Example usage:
      * $stmt = DB::getInstance()->prepare("SELECT * FROM todos");
+     * @return PDO
      */
-    public static function getInstance(): object
+    public static function getInstance(): PDO
     {
 
         if(!self::$objInstance)

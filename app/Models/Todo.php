@@ -7,10 +7,9 @@ use App\Lib\DB;
 
 Class Todo
 {
-    public int $id;
+    private int $id;
     private string $text;
     private bool $done = false;
-
 
     /**
      * Constructor, if an id is passed, it will find the todo with that id

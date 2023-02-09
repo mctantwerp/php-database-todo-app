@@ -6,6 +6,10 @@ use App\Models\Todo;
 
 class HomeController
 {
+    /**
+     * Single action controller
+     * Invoked by calling the class as a function
+     */
     public function __invoke()
     {
         /**
@@ -58,10 +62,5 @@ class HomeController
                 $todo->find($_POST['id'])->delete();
             }
         }
-    }
-
-    private function add()
-    {
-
     }
 }
