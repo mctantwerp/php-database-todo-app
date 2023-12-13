@@ -1,7 +1,7 @@
 <?php
 try
 {
-    $connection = new PDO('mysql:host=localhost;dbname=todo_v1','root','');
+    $connection = new PDO('mysql:host=localhost;dbname=santa_shop','root','');
 }
 catch (Exception $exception)
 {
@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
         $deleteStatement->execute();
     }
 
-    header('Location: app.php');
+    header('Location: index.php');
     die;
 }
 ?>
@@ -52,14 +52,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
     <?php foreach($todos as $todo): ?>
     <li>
         <?=$todo["title"] ?>
-        <form action="app.php" method="post">
+        <form action="index.php" method="post">
             <input type="hidden" name="id_to_delete" value="<?= $todo['id'] ?>">
             <button>Delete</button>
         </form>
     </li>
     <?php endforeach; ?>
 
-    <form action="app.php" method="post">
+    <form action="index.php" method="post">
         <input type="text" name="title">
         <button>Add!</button>
     </form>
