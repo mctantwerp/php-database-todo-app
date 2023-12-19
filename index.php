@@ -1,7 +1,7 @@
 <?php
 try
 {
-    $connection = new PDO('mysql:host=localhost;dbname=santa_shop','root','');
+    $connection = new PDO('mysql:host=localhost;dbname=kdg','root','');
 }
 catch (Exception $exception)
 {
@@ -13,7 +13,7 @@ catch (Exception $exception)
  * Query to get all todos
  */
 $selectStatement = $connection->prepare('SELECT * FROM todos');
-$selectStatement->setFetchMode(PDO::FETCH_ASSOC);
+// $selectStatement->setFetchMode(PDO::FETCH_ASSOC);
 $selectStatement->execute();
 
 $todos = $selectStatement->fetchAll();
@@ -23,10 +23,10 @@ $todos = $selectStatement->fetchAll();
  */
 if($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-    if(isset($_POST["title"]))
+    if(isset($_POST['title']) && !empty($_POST['title']))
     {
         $insertStatement = $connection->prepare('INSERT INTO todos (title) VALUES (:title)');
-        $insertStatement->bindParam('title',$_POST["title"]);
+        $insertStatement->bindParam('title',$_POST['title']);
         $insertStatement->execute();
     }
 
