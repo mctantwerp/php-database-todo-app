@@ -10,6 +10,9 @@ Class Todo
     private int $id;
     private string $text;
     private bool $done = false;
+    private $created_at;
+    private $updated_at;
+    private $deleted_at;
 
     /**
      * Constructor, if an id is passed, it will find the todo with that id
