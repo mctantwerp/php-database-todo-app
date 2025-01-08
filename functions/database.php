@@ -1,6 +1,6 @@
 <?php
 
-function dbConnect(string $user, string $pass, string $db, string $host = 'localhost')
+function dbConnect(string $user, string $pass, string $db, string $host = '127.0.0.1')
 {
     try {
         $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
