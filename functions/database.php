@@ -8,7 +8,7 @@
  * @param string $host
  * @return PDO
  */
-function dbConnect(string $user, string $pass, string $db, string $host = 'localhost'): PDO
+function dbConnect(string $user, string $pass, string $db, string $host = '127.0.0.1'): PDO
 {
     $connection = new PDO("mysql:host={$host};dbname={$db}", $user, $pass);
 
@@ -17,12 +17,9 @@ function dbConnect(string $user, string $pass, string $db, string $host = 'local
 
 function getTodos(PDO $db, bool $withTrashed = false): array
 {
-    if($withTrashed === true)
-    {
+    if ($withTrashed === true) {
         $res = $db->query('SELECT * FROM todos');
-    }
-    else
-    {
+    } else {
         $res = $db->query('SELECT * FROM todos WHERE deleted_at IS NULL');
     }
 
