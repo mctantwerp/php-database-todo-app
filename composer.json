@@ -1,5 +1,5 @@
 {
     "require": {
-        "filp/whoops": "^2.14"
+        "filp/whoops": "^2.15"
     }
 }

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `todosv2`;
+DROP TABLE IF EXISTS `todos`;
 CREATE TABLE `todos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `text` varchar(255) DEFAULT NULL,
